@@ -1,4 +1,4 @@
-package types
+package httpx
 
 const (
 	MethodGet     = "GET"     // RFC 7231, 4.3.1
