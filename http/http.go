@@ -21,6 +21,7 @@ type Request struct {
 
 type Response struct {
 	Headers map[string]string
+	Cookies map[string]string
 	Body    []byte
 	Status  int32
 }
@@ -108,6 +109,13 @@ func HTTPRequest(httpRequest *Request) (*Response, error) {
 		}
 	}
 	httpResponse.Headers = newHeader2
+
+	cookie := make(map[string]string)
+	fastResp.Header.VisitAllCookie(func(key, value []byte) {
+		cookie[string(key)] = strings.Split(strings.Split(string(value), ";")[0], "=")[1]
+	})
+	httpResponse.Cookies = cookie
+
 	httpResponse.Body = fastResp.Body()
 	return httpResponse, nil
 }
