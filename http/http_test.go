@@ -9,7 +9,7 @@ func TestGet(t *testing.T) {
 	Init()
 	req := NewRequest()
 	req.Url = "https://www.google.com"
-	req.Method = MethodGet
+	req.Method = GET
 	//req.Proxy = "127.0.0.1:8080"
 	fmt.Println(req)
 	resp, err := HTTPRequest(req)
