@@ -13,6 +13,7 @@ type Request struct {
 	Url     string
 	Method  string
 	Headers map[string]string
+	Cookies map[string]string
 	Body    []byte
 	Timeout int
 	Retry   int
@@ -72,6 +73,12 @@ func HTTPRequest(httpRequest *Request) (*Response, error) {
 		rawHeader.WriteString(": ")
 		rawHeader.WriteString(v)
 		rawHeader.WriteString("\n")
+	}
+
+	if len(httpRequest.Cookies) > 0 {
+		for k, v := range httpRequest.Cookies {
+			fastReq.Header.SetCookie(k, v)
+		}
 	}
 
 	fastReq.SetBody(httpRequest.Body)
