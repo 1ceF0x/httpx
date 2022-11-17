@@ -90,6 +90,10 @@ func (request *Requests) Request() (*Response, error) {
 	fastReq.Header.SetMethod(request.Method)
 	fastReq.SetRequestURI(request.Url)
 
+	for k, v := range request.Headers {
+		fastReq.Header.Set(k, v)
+	}
+
 	if len(request.Cookies) > 0 {
 		for k, v := range request.Cookies {
 			fastReq.Header.SetCookie(k, v)
