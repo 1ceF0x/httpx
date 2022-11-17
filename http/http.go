@@ -2,7 +2,6 @@ package httpx
 
 import (
 	"crypto/tls"
-	"fmt"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpproxy"
 	"io"
@@ -77,7 +76,6 @@ func NewRequest() *Requests {
 }
 
 func (request *Requests) Request() (*Response, error) {
-	fmt.Println(FT)
 	if len(strings.TrimSpace(request.Proxy)) > 0 {
 		if strings.HasPrefix(request.Proxy, "socks4://") || strings.HasPrefix(request.Proxy, "socks5://") {
 			FT.Dial = fasthttpproxy.FasthttpSocksDialer(request.Proxy)
