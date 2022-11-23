@@ -22,7 +22,7 @@ type Requests struct {
 }
 
 type Response struct {
-	Headers map[string][]byte
+	Headers map[string]string
 	Cookies map[string]string
 	Body    []byte
 	Status  int
@@ -117,20 +117,33 @@ func (request *Requests) Request() (*Response, error) {
 		attempts++
 	}
 
-	var fastRespHeader map[string][]byte
-	fastRespHeader = make(map[string][]byte)
+	httpResponse := &Response{}
+	var err error
+	contentEncoding := strings.ToLower(string(fastResp.Header.Peek("Content-Encoding")))
+	switch contentEncoding {
+	case "", "none", "identity":
+		httpResponse.Body = fastResp.Body()
+	case "gzip":
+		httpResponse.Body, err = fastResp.BodyGunzip()
+	case "deflate":
+		httpResponse.Body, err = fastResp.BodyInflate()
+	default:
+		httpResponse.Body = fastResp.Body()
+	}
+	if err != nil {
+		return nil, err
+	}
 
-	// 响应头转换map
+	httpResponse.Status = fastResp.StatusCode()
+
+	fastRespHeader := make(map[string]string)
 	fastResp.Header.VisitAll(func(key, value []byte) {
-		if fastRespHeader[string(key)] != nil {
-			fastRespHeader[string(key)] = append(fastRespHeader[string(key)], value...)
+		if fastRespHeader[string(key)] != "" {
+			fastRespHeader[string(key)] += string(value)
 		} else {
-			fastRespHeader[string(key)] = value
+			fastRespHeader[string(key)] = string(value)
 		}
 	})
-
-	httpResponse := &Response{}
-	httpResponse.Status = fastResp.StatusCode()
 	httpResponse.Headers = fastRespHeader
 
 	cookie := make(map[string]string)
@@ -139,7 +152,6 @@ func (request *Requests) Request() (*Response, error) {
 	})
 	httpResponse.Cookies = cookie
 
-	httpResponse.Body = fastResp.Body()
 	return httpResponse, nil
 }
 
