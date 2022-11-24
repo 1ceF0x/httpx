@@ -125,6 +125,8 @@ func (request *Requests) Request() (*Response, error) {
 		httpResponse.Body = fastResp.Body()
 	case "gzip":
 		httpResponse.Body, err = fastResp.BodyGunzip()
+	case "br":
+		httpResponse.Body, err = fastResp.BodyUnbrotli()
 	case "deflate":
 		httpResponse.Body, err = fastResp.BodyInflate()
 	default:
