@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpproxy"
-	"io"
 	"strings"
 	"time"
 )
@@ -71,7 +70,7 @@ func NewRequest() *Requests {
 	return &Requests{
 		Headers: map[string]string{"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0"},
 		Timeout: 60,
-		Retry:   3,
+		Retry:   0,
 	}
 }
 
@@ -108,7 +107,7 @@ func (request *Requests) Request() (*Response, error) {
 	attempts := 0
 	for {
 		err := FT.DoTimeout(fastReq, fastResp, time.Duration(request.Timeout)*time.Second)
-		if err == nil || !isIdempotent(fastReq) && err != io.EOF {
+		if err == nil {
 			break
 		}
 		if attempts >= request.Retry {
@@ -155,8 +154,4 @@ func (request *Requests) Request() (*Response, error) {
 	httpResponse.Cookies = cookie
 
 	return httpResponse, nil
-}
-
-func isIdempotent(req *fasthttp.Request) bool {
-	return req.Header.IsGet() || req.Header.IsHead() || req.Header.IsPut()
 }
