@@ -2,7 +2,7 @@ module github.com/1ceF0x/httpx
 
 go 1.19
 
-require github.com/valyala/fasthttp v1.41.0
+require github.com/valyala/fasthttp v1.44.0
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect

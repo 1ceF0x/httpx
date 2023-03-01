@@ -21,6 +21,6 @@ func TestGet(t *testing.T) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println(string(resp.Headers["Server"]))
+		fmt.Println(resp.Headers["Server"])
 	}
 }
