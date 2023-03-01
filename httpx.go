@@ -39,10 +39,10 @@ type Client struct {
 
 // HTTPX Client默认配置
 var FT = &fasthttp.Client{
-	TLSConfig:                 &tls.Config{InsecureSkipVerify: true},
-	MaxConnsPerHost:           1024,
-	ReadTimeout:               time.Duration(20) * time.Second,
-	WriteTimeout:              time.Duration(3) * time.Second,
+	TLSConfig:       &tls.Config{InsecureSkipVerify: true},
+	MaxConnsPerHost: 1024,
+	//ReadTimeout:               time.Duration(20) * time.Second,
+	//WriteTimeout:              time.Duration(3) * time.Second,
 	NoDefaultUserAgentHeader:  true,
 	MaxIdemponentCallAttempts: 1,
 }
